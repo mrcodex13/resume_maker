@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ResumeAI — ATS Resume Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="logo">Resume<span>AI</span></div>
+      <div class="nav-badge">ATS Optimized</div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">Powered by LLM + ML</div>
+    <h1>Your resume,<br/><span class="accent">tailored to the job.</span></h1>
+    <p class="hero-sub">Paste the job description, upload your resume — we'll generate an ATS-friendly resume built exactly for that role.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">98%</span><span class="stat-label">ATS pass rate</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">2</span><span class="stat-label">Output formats</span></div>
+      <div class="stat-divider"></div>
+      <div class="stat"><span class="stat-num">&lt;60s</span><span class="stat-label">Generation time</span></div>
+    </div>
+  </section>
+
+  <!-- MAIN FORM -->
+  <main class="form-section">
+    <div class="form-grid">
+
+      <!-- LEFT COL -->
+      <div class="col">
+
+        <!-- STEP 1 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="step-badge">01</div>
+            <div>
+              <h2>Personal Details</h2>
+              <p class="card-sub">Your basic information</p>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Full Name</label>
+              <input type="text" id="inp-name" placeholder="Kartik Singh"/>
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input type="email" id="inp-email" placeholder="kartiksingh2173@gmail.com"/>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Phone</label>
+              <input type="tel" id="inp-phone" placeholder="+91 7080870379"/>
+            </div>
+            <div class="field">
+              <label>Location</label>
+              <input type="text" id="inp-location" placeholder="Gwalior, India"/>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>LinkedIn</label>
+              <input type="url" id="inp-linkedin" placeholder="linkedin.com/in/kartiksingh2173"/>
+            </div>
+            <div class="field">
+              <label>GitHub / Portfolio</label>
+              <input type="url" id="inp-github" placeholder="github.com/mrcodex13"/>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Target Role</label>
+            <input type="text" id="inp-role" placeholder="e.g. Data Science Intern, SWE, ML Engineer"/>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="card">
+          <div class="card-header">
+            <div class="step-badge">03</div>
+            <div>
+              <h2>Upload Current Resume</h2>
+              <p class="card-sub">We'll extract and reuse relevant content</p>
+            </div>
+          </div>
+
+          <div class="upload-zone" id="uploadZone">
+            <div class="upload-icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </div>
+            <p class="upload-text">Drag & drop your resume here</p>
+            <p class="upload-sub">PDF, DOCX — max 5MB</p>
+            <label class="upload-btn">
+              Browse File
+              <input type="file" accept=".pdf,.docx" hidden id="fileInput"/>
+            </label>
+          </div>
+          <div class="file-info" id="fileInfo" style="display:none">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span id="fileName"></span>
+            <button class="remove-file" id="removeFile">✕</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RIGHT COL -->
+      <div class="col">
+
+        <!-- STEP 2 -->
+        <div class="card card-tall">
+          <div class="card-header">
+            <div class="step-badge">02</div>
+            <div>
+              <h2>Job Description</h2>
+              <p class="card-sub">Paste the full JD for best ATS match</p>
+            </div>
+          </div>
+
+          <textarea class="jd-textarea" placeholder="Paste the full job description here...
+
+Example:
+We are looking for a Machine Learning Engineer to join our team. The ideal candidate will have experience with Python, TensorFlow/PyTorch, and deploying ML models to production...
+
+The more detail you provide, the better your resume will be tailored."></textarea>
+
+          <div class="jd-footer">
+            <span class="jd-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              Include skills, responsibilities, and requirements for best results
+            </span>
+            <span class="char-count" id="charCount">0 chars</span>
+          </div>
+        </div>
+
+        <!-- OUTPUT FORMAT -->
+        <div class="card">
+          <div class="card-header">
+            <div class="step-badge">04</div>
+            <div>
+              <h2>Output Format</h2>
+              <p class="card-sub">Both generated automatically</p>
+            </div>
+          </div>
+          <div class="format-row">
+            <div class="format-chip active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              PDF
+            </div>
+            <div class="format-chip active">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              DOCX
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- GENERATE BTN -->
+    <div class="generate-wrap">
+      <button class="generate-btn" id="generateBtn">
+        <span class="btn-text">Generate My ATS Resume</span>
+        <span class="btn-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </button>
+      <p class="generate-note">Takes ~30–60 seconds · ATS optimized · No data stored</p>
+    </div>
+
+    <!-- LOADING STATE -->
+    <div class="loading-card" id="loadingCard" style="display:none">
+      <div class="loading-inner">
+        <div class="spinner"></div>
+        <div>
+          <p class="loading-title">Generating your resume...</p>
+          <p class="loading-sub" id="loadingStep">Analyzing job description</p>
+        </div>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <!-- RESULT STATE -->
+    <div class="result-card" id="resultCard" style="display:none">
+      <div class="result-icon">✓</div>
+      <div>
+        <p class="result-title">Your resume is ready!</p>
+        <p class="result-sub">ATS-optimized for the job description provided</p>
+      </div>
+      <div class="download-btns">
+        <button class="dl-btn dl-pdf" id="dlPdfBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
+        <button class="dl-btn dl-docx" id="dlDocxBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download DOCX
+        </button>
+      </div>
+    </div>
+
+    <!-- ATS SCORE PANEL -->
+    <div class="ats-panel" id="atsPanel" style="display:none">
+
+      <!-- Score Ring -->
+      <div class="ats-ring-wrap">
+        <svg class="ats-ring" viewBox="0 0 120 120" width="160" height="160">
+          <circle class="ring-bg"  cx="60" cy="60" r="50" fill="none" stroke-width="10"/>
+          <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="50" fill="none"
+                  stroke-width="10" stroke-linecap="round"
+                  stroke-dasharray="314" stroke-dashoffset="314"
+                  transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="ring-label">
+          <span class="ring-score" id="ringScore">0</span>
+          <span class="ring-unit">/ 100</span>
+          <span class="ring-tag">ATS Score</span>
+        </div>
+      </div>
+
+      <!-- Sub-scores -->
+      <div class="ats-bars">
+        <div class="ats-bar-row">
+          <span class="ats-bar-label">Keyword Coverage</span>
+          <div class="ats-bar-track"><div class="ats-bar-fill kw-fill" id="kwBar"></div></div>
+          <span class="ats-bar-val" id="kwVal">0%</span>
+        </div>
+        <div class="ats-bar-row">
+          <span class="ats-bar-label">Skills Match</span>
+          <div class="ats-bar-track"><div class="ats-bar-fill sk-fill" id="skBar"></div></div>
+          <span class="ats-bar-val" id="skVal">0%</span>
+        </div>
+        <div class="ats-bar-row">
+          <span class="ats-bar-label">Experience Relevance</span>
+          <div class="ats-bar-track"><div class="ats-bar-fill ex-fill" id="exBar"></div></div>
+          <span class="ats-bar-val" id="exVal">0%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEYWORD HEATMAP -->
+    <div class="heatmap-panel" id="heatmapPanel" style="display:none">
+      <div class="heatmap-header">
+        <h3 class="heatmap-title">Keyword Heatmap</h3>
+        <p class="heatmap-sub">JD keywords found in your generated resume</p>
+      </div>
+      <div class="heatmap-section">
+        <p class="heatmap-legend hit">✓ Present in resume</p>
+        <div class="chip-row" id="hitChips"></div>
+      </div>
+      <div class="heatmap-section">
+        <p class="heatmap-legend miss">✕ Missing from resume</p>
+        <div class="chip-row" id="missChips"></div>
+      </div>
+    </div>
+
+    <!-- SKILLS GAP (existing, kept for compatibility) -->
+    <div id="skillsGap" style="display:none"></div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>ResumeAI &mdash; Flask &middot; Qwen2.5 (Ollama) &middot; spaCy &middot; python-docx &middot; ReportLab</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
